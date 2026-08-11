@@ -43,6 +43,7 @@
   }
 
   let currentTask = [];
+  let hintsVisible = false;
 
   function pickTask(n) {
     const shuffled = POOL.slice().sort(() => Math.random() - 0.5);
@@ -70,20 +71,30 @@
     const box = document.getElementById('techtask-list');
     box.innerHTML = currentTask.map((t, i) => `
       <li class="techtask-item" id="tt-item-${i}">
-        <span class="tt-code">${escapeHtml(t.code)}</span> «${escapeHtml(t.label)}»
-        <span class="tt-where">(раздел ${escapeHtml(t.section)})</span>
+        «${escapeHtml(t.label)}»
+        <span class="tt-hint"><span class="tt-code">${escapeHtml(t.code)}</span> · раздел ${escapeHtml(t.section)}</span>
         → установить <b class="tt-target">${escapeHtml(t.targetDisplay)}</b>
       </li>
     `).join('');
+    box.classList.toggle('hints-visible', hintsVisible);
     const result = document.getElementById('techtask-result');
     result.textContent = '';
     result.className = 'journal-score';
+  }
+
+  function setHintsVisible(v) {
+    hintsVisible = v;
+    const box = document.getElementById('techtask-list');
+    if (box) box.classList.toggle('hints-visible', hintsVisible);
+    const btn = document.getElementById('btn-techtask-hint');
+    if (btn) btn.textContent = hintsVisible ? 'Скрыть подсказку' : 'Показать подсказку';
   }
 
   function showTask() {
     currentTask = pickTask(3);
     const panel = document.getElementById('techtask-panel');
     panel.style.display = '';
+    setHintsVisible(false); // новое задание — подсказка снова скрыта
     renderTask();
     if (typeof window.__electonLog === 'function') window.__electonLog('Технолог передал задание на изменение параметров');
     panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -108,7 +119,8 @@
       li.className = 'techtask-item ' + (ok ? 'tt-ok' : 'tt-bad');
       li.innerHTML = `
         <span class="tt-mark">${ok ? '✔' : '✘'}</span>
-        <span class="tt-code">${escapeHtml(t.code)}</span> «${escapeHtml(t.label)}»
+        «${escapeHtml(t.label)}»
+        <span class="tt-hint"><span class="tt-code">${escapeHtml(t.code)}</span> · раздел ${escapeHtml(t.section)}</span>
         → нужно: <b class="tt-target">${escapeHtml(t.targetDisplay)}</b>
         · сейчас: <span class="tt-current">${escapeHtml(String(curDisplay))}</span>
       `;
@@ -127,8 +139,10 @@
 
   const checkBtn = document.getElementById('btn-techtask-check');
   const newBtn = document.getElementById('btn-techtask-new');
+  const hintBtn = document.getElementById('btn-techtask-hint');
   if (checkBtn) checkBtn.addEventListener('click', checkTask);
   if (newBtn) newBtn.addEventListener('click', showTask);
+  if (hintBtn) hintBtn.addEventListener('click', () => setHintsVisible(!hintsVisible));
 
   // вызывается из journal.js при успешной сдаче журнала
   window.__electonShowTechTask = showTask;
