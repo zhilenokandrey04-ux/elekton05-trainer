@@ -1,22 +1,23 @@
 /* ============================================================
-   Журнал оператора — считывание показаний со станции
-   Читает значения напрямую из тех же объектов SECTIONS (data.js),
-   которые изменяет simulator.js, поэтому всегда видит актуальные данные.
+   Журнал оператора — режим проверки
+   Тренируемый читает показания с панели и вписывает их вручную,
+   кнопка «Проверить» сверяет ввод с реальными значениями станции
+   и подсвечивает поля зелёным/красным.
    ============================================================ */
 (function () {
   const escapeHtml = (s) => String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 
   const FIELDS = [
-    { key: 'freq', label: 'Частота', code: '003', unit: 'Гц', decimals: 2 },
-    { key: 'current', label: 'Ток двигателя', code: ['004', '005', '006'], agg: 'max', unit: 'А', decimals: 1 },
-    { key: 'load', label: 'Загрузка', code: '018', unit: '%', decimals: 0 },
-    { key: 'zsp', label: 'Зсп (глубина спуска)', code: '227', unit: 'м', decimals: 0 },
-    { key: 'iso', label: 'Сопр. изоляции', code: '024', unit: 'кОм', decimals: 0 },
-    { key: 'temp', label: 'Температура', code: '030', unit: '°C', decimals: 0 },
-    { key: 'press', label: 'Давление', code: '028', unit: 'атм.', decimals: 0 },
-    { key: 'cos', label: 'Cos φ', code: '017', unit: '', decimals: 2 },
-    { key: 'pact', label: 'Активная мощность', code: '015', unit: 'кВт', decimals: 1 },
-    { key: 'uout', label: 'Выходное напряжение', code: '013', unit: 'В', decimals: 0 },
+    { key: 'freq', label: 'Частота', code: '003', unit: 'Гц', decimals: 2, min: 35, max: 65 },
+    { key: 'current', label: 'Ток двигателя', code: ['004', '005', '006'], agg: 'max', unit: 'А', decimals: 1, min: 40, max: 140 },
+    { key: 'load', label: 'Загрузка', code: '018', unit: '%', decimals: 0, min: 30, max: 100 },
+    { key: 'zsp', label: 'Зсп (глубина спуска)', code: '227', unit: 'м', decimals: 0, min: 800, max: 2600 },
+    { key: 'iso', label: 'Сопр. изоляции', code: '024', unit: 'кОм', decimals: 0, min: 200, max: 9999 },
+    { key: 'temp', label: 'Температура', code: '030', unit: '°C', decimals: 0, min: 15, max: 95 },
+    { key: 'press', label: 'Давление', code: '028', unit: 'атм.', decimals: 0, min: 10, max: 180 },
+    { key: 'cos', label: 'Cos φ', code: '017', unit: '', decimals: 2, min: 0.6, max: 0.95 },
+    { key: 'pact', label: 'Активная мощность', code: '015', unit: 'кВт', decimals: 1, min: 15, max: 140 },
+    { key: 'uout', label: 'Выходное напряжение', code: '013', unit: 'В', decimals: 0, min: 340, max: 400 },
   ];
 
   function findFunc(code) {
@@ -27,46 +28,110 @@
     return null;
   }
 
-  function readStationValue(field) {
+  function targetString(field) {
     const codes = Array.isArray(field.code) ? field.code : [field.code];
     const vals = codes.map((c) => {
       const f = findFunc(c);
       return f && typeof f.value === 'number' ? f.value : (f ? parseFloat(f.value) : NaN);
     }).filter((v) => !isNaN(v));
     if (!vals.length) return null;
-    let v;
-    if (field.agg === 'max') v = Math.max(...vals);
-    else v = vals[0];
+    const v = field.agg === 'max' ? Math.max(...vals) : vals[0];
     return v.toFixed(field.decimals);
   }
 
-  // ---- build the field table ----
+  function rand(min, max, decimals) {
+    const v = Math.random() * (max - min) + min;
+    return parseFloat(v.toFixed(decimals));
+  }
+
+  // ---- построение полей ----
   const tbody = document.getElementById('journal-fields-body');
   tbody.innerHTML = FIELDS.map((f) => `
     <tr>
       <td>${escapeHtml(f.label)}</td>
-      <td><input type="text" id="jf-${f.key}" placeholder="—"></td>
+      <td><input type="text" id="jf-${f.key}" placeholder="—" autocomplete="off"></td>
       <td>${escapeHtml(f.unit)}</td>
     </tr>
   `).join('');
 
+  // сброс подсветки при правке поля
+  FIELDS.forEach((f) => {
+    const el = document.getElementById('jf-' + f.key);
+    el.addEventListener('input', () => {
+      el.classList.remove('jf-correct', 'jf-wrong');
+    });
+  });
+
+  function scorebox(text, cls) {
+    const box = document.getElementById('journal-score');
+    box.textContent = text;
+    box.className = 'journal-score ' + (cls || '');
+  }
+
+  // ---- «Обновить показания» — генерирует новый вариант на станции ----
+  function randomizeStation() {
+    FIELDS.forEach((f) => {
+      const v = rand(f.min, f.max, f.decimals);
+      const codes = Array.isArray(f.code) ? f.code : [f.code];
+      codes.forEach((c) => {
+        const func = findFunc(c);
+        if (func) func.value = v;
+      });
+    });
+    FIELDS.forEach((f) => {
+      const el = document.getElementById('jf-' + f.key);
+      el.value = '';
+      el.classList.remove('jf-correct', 'jf-wrong');
+    });
+    scorebox('Новые показания на станции. Считайте их с панели и впишите значения.', '');
+    if (typeof window.__electonRender === 'function') window.__electonRender();
+    if (typeof window.__electonLog === 'function') window.__electonLog('Показания станции обновлены (новый вариант проверки)');
+  }
+
+  // ---- «Проверить» — сверяет ввод с реальными значениями ----
+  function checkAnswers() {
+    let correct = 0;
+    let filled = 0;
+    FIELDS.forEach((f) => {
+      const el = document.getElementById('jf-' + f.key);
+      const raw = el.value.trim().replace(',', '.');
+      el.classList.remove('jf-correct', 'jf-wrong');
+      if (!raw) { el.classList.add('jf-wrong'); return; }
+      filled++;
+      const num = parseFloat(raw);
+      const target = targetString(f);
+      const typedFixed = isNaN(num) ? null : num.toFixed(f.decimals);
+      if (typedFixed !== null && target !== null && typedFixed === target) {
+        el.classList.add('jf-correct');
+        correct++;
+      } else {
+        el.classList.add('jf-wrong');
+      }
+    });
+    if (filled === 0) {
+      scorebox('Сначала впишите показания, которые видите на панели.', '');
+      return;
+    }
+    const pct = Math.round((correct / FIELDS.length) * 100);
+    if (correct === FIELDS.length) {
+      scorebox(`Верно: ${correct} из ${FIELDS.length} (${pct}%) — все показания сняты правильно!`, 'ok');
+    } else {
+      scorebox(`Верно: ${correct} из ${FIELDS.length} (${pct}%) — красным отмечены ошибки, исправьте и проверьте снова.`, 'bad');
+    }
+    if (typeof window.__electonLog === 'function') window.__electonLog(`Проверка журнала: ${correct} из ${FIELDS.length} верно`);
+  }
+
+  // ---- подсказка «Считать со станции» (режим тренировки, не для теста) ----
   function readFromStation() {
     FIELDS.forEach((f) => {
-      const v = readStationValue(f);
+      const v = targetString(f);
       const el = document.getElementById('jf-' + f.key);
-      if (el && v !== null) el.value = v;
+      if (el && v !== null) { el.value = v; el.classList.remove('jf-correct', 'jf-wrong'); }
     });
-    flashButton('btn-journal-read');
+    scorebox('Подставлены подсказки — для проверки себя используйте «Обновить показания» без подсказок.', '');
   }
 
-  function flashButton(id) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.style.transform = 'scale(.97)';
-    setTimeout(() => { el.style.transform = ''; }, 120);
-  }
-
-  // ---- history ----
+  // ---- история записей ----
   const entries = [];
   const historyBody = document.getElementById('journal-history-body');
 
@@ -121,12 +186,14 @@
     URL.revokeObjectURL(url);
   }
 
+  document.getElementById('btn-randomize').addEventListener('click', randomizeStation);
+  document.getElementById('btn-journal-check').addEventListener('click', checkAnswers);
   document.getElementById('btn-journal-read').addEventListener('click', readFromStation);
   document.getElementById('btn-journal-add').addEventListener('click', addEntry);
   document.getElementById('btn-journal-csv').addEventListener('click', downloadCsv);
   document.getElementById('btn-journal-clear').addEventListener('click', clearJournal);
 
   renderHistory();
-  // подставим первые значения сразу при загрузке страницы
-  setTimeout(readFromStation, 500);
+  // при загрузке страницы сразу готовим первый вариант для проверки
+  setTimeout(randomizeStation, 500);
 })();

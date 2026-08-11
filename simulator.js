@@ -401,4 +401,8 @@
   log('Питание подано. Загрузка «ЭЛЕКТОН-09»…');
   setTimeout(() => { log('Готово. Экран «Текущие параметры».'); render(); updateTasks(); }, 400);
   render();
+
+  // ---------- внешний доступ для журнала оператора (journal.js) ----------
+  window.__electonRender = render;
+  window.__electonLog = log;
 })();

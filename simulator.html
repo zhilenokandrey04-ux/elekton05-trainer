@@ -124,8 +124,8 @@
     <div class="section-head">
       <p class="section-eyebrow">Обход скважины</p>
       <h2>Журнал оператора</h2>
-      <p class="desc">Считайте показания прямо с работающей панели тренажёра — как во время обхода —
-      и занесите их в журнал. Значения берутся из тех же функций, что вы видите на ЖКИ.</p>
+      <p class="desc">Станция выдаёт случайные показания — считайте их с панели тренажёра (как во время
+      обхода) и впишите значения вручную. Кнопка «Проверить» сверит ваш ввод с реальными данными станции.</p>
     </div>
 
     <div class="journal-grid">
@@ -135,14 +135,30 @@
       </table>
 
       <div class="journal-actions">
-        <button class="btn btn-primary btn-block" id="btn-journal-read">Считать со станции</button>
-        <button class="btn btn-ghost btn-block" id="btn-journal-add">Записать в журнал</button>
-        <button class="btn btn-ghost btn-block" id="btn-journal-csv">Скачать журнал (CSV)</button>
-        <button class="btn btn-danger btn-block" id="btn-journal-clear">Очистить журнал</button>
-        <p class="journal-hint">Поля можно править вручную — как заполнение бумажного журнала —
-        или подставить автоматически кнопкой «Считать со станции».</p>
+        <div class="journal-actions-group">
+          <h5>Проверка (тест)</h5>
+          <button class="btn btn-primary btn-block" id="btn-randomize">Обновить показания станции</button>
+          <button class="btn btn-primary btn-block" id="btn-journal-check">Проверить</button>
+          <p class="journal-hint">Считайте новые показания с панели и впишите вручную, затем нажмите «Проверить» —
+          верные поля станут зелёными, неверные красными.</p>
+        </div>
+
+        <div class="journal-actions-group">
+          <h5>Тренировка (подсказка)</h5>
+          <button class="btn btn-ghost btn-block" id="btn-journal-read">Считать со станции</button>
+          <p class="journal-hint">Подставляет верные значения — используйте для обучения, не для самопроверки.</p>
+        </div>
+
+        <div class="journal-actions-group">
+          <h5>Журнал записей</h5>
+          <button class="btn btn-ghost btn-block" id="btn-journal-add">Записать в журнал</button>
+          <button class="btn btn-ghost btn-block" id="btn-journal-csv">Скачать журнал (CSV)</button>
+          <button class="btn btn-danger btn-block" id="btn-journal-clear">Очистить журнал</button>
+        </div>
       </div>
     </div>
+
+    <div class="journal-score" id="journal-score"></div>
 
     <div class="journal-history-wrap">
       <table class="journal-table">
