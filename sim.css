@@ -6,7 +6,11 @@
   padding:34px 0 80px;
 }
 @media (max-width:1080px){
-  .trainer-wrap{grid-template-columns:1fr; }
+  .trainer-wrap{grid-template-columns:1fr; padding:22px 0 56px; gap:18px;}
+  /* на узких экранах панель показываем первой, задания и журнал/лог — ниже */
+  .trainer-wrap > div:nth-child(1){order:2;}
+  .trainer-wrap > div:nth-child(2){order:1;}
+  .trainer-wrap > div:nth-child(3){order:3;}
 }
 
 /* ---- side columns ---- */
@@ -79,36 +83,38 @@ select.fault-select, .side-card select{
     linear-gradient(155deg,#34383e,#191b1e 60%);
   border:1px solid var(--steel-line);
   border-radius:14px;
-  padding:26px 26px 30px;
+  padding:clamp(14px, 4.5vw, 26px) clamp(14px, 4.5vw, 26px) clamp(18px, 5vw, 30px);
   box-shadow:0 40px 80px -30px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.04);
   position:relative;
 }
 .unit::before{
   content:"ЭЛЕКТОН · ELEKTON";
-  position:absolute; top:14px; left:26px;
-  font-family:'Oswald',sans-serif; font-weight:600; font-size:12px; letter-spacing:.14em;
+  position:absolute; top:clamp(8px, 2.5vw, 14px); left:clamp(14px, 4.5vw, 26px);
+  font-family:'Oswald',sans-serif; font-weight:600; font-size:clamp(9px, 2.6vw, 12px); letter-spacing:.1em;
   color:var(--ink-faint);
 }
 .unit-inner{margin-top:34px;}
 
 .led-strip{
   display:grid; grid-template-columns:repeat(3,1fr);
-  gap:10px; padding:6px 10px 22px;
+  gap:clamp(6px, 2vw, 10px); padding:clamp(4px, 1.5vw, 6px) clamp(6px, 2vw, 10px) clamp(14px, 4vw, 22px);
 }
 .led-cell{
-  display:flex; flex-direction:column; align-items:center; gap:9px;
-  padding:12px 6px; border-radius:6px;
+  display:flex; flex-direction:column; align-items:center; gap:clamp(5px, 1.6vw, 9px);
+  padding:clamp(7px, 2.2vw, 12px) 4px; border-radius:6px;
   background:rgba(0,0,0,.15);
 }
-.led-cell .led{width:17px;height:17px;}
-.led-cell .cap{font-family:'Oswald',sans-serif; font-size:12px; font-weight:600; letter-spacing:.06em; color:var(--ink-dim); text-transform:uppercase;}
-.led-cell .sub{font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--ink-faint); letter-spacing:.08em;}
+.led-cell .led{width:clamp(13px, 3.6vw, 17px); height:clamp(13px, 3.6vw, 17px); flex:none;}
+.led-cell .cap{font-family:'Oswald',sans-serif; font-size:clamp(9px, 2.6vw, 12px); font-weight:600; letter-spacing:.04em; color:var(--ink-dim); text-transform:uppercase; text-align:center;}
+.led-cell .sub{font-family:'IBM Plex Mono',monospace; font-size:clamp(7px, 1.9vw, 9px); color:var(--ink-faint); letter-spacing:.06em;}
 
 .lcd-frame{
   background:linear-gradient(160deg,#0f110f,#05100a);
-  border:10px solid #14161a;
+  border-style:solid;
+  border-color:#14161a;
+  border-width:clamp(5px, 2.2vw, 10px);
   border-radius:5px;
-  padding:16px 18px;
+  padding:clamp(9px, 3vw, 16px) clamp(10px, 3.5vw, 18px);
   box-shadow:inset 0 3px 14px rgba(0,0,0,.7);
   margin:0 4px 26px;
 }
@@ -120,13 +126,13 @@ select.fault-select, .side-card select{
 }
 .lcd-screen .lrow{
   font-family:'Silkscreen','IBM Plex Mono',monospace;
-  font-size:18px;
-  letter-spacing:2px;
+  font-size:clamp(9.5px, 3.4vw, 18px);
+  letter-spacing:clamp(0px, 0.35vw, 2px);
   color:var(--lcd-fg);
   text-shadow:0 0 7px rgba(143,240,138,.6), 0 0 1px rgba(143,240,138,.9);
   white-space:pre;
-  height:28px;
-  line-height:28px;
+  height:clamp(17px, 6vw, 28px);
+  line-height:clamp(17px, 6vw, 28px);
 }
 .lcd-screen .lrow .cursor{color:var(--amber); text-shadow:0 0 8px rgba(232,162,58,.8);}
 .lcd-screen .lrow .blink{animation:lcdblink 1s steps(1) infinite;}
@@ -141,9 +147,9 @@ select.fault-select, .side-card select{
 /* ---- keypad ---- */
 .keypad{
   display:grid;
-  grid-template-columns:64px 64px 64px 1fr 1fr;
-  grid-template-rows:64px 64px;
-  gap:12px;
+  grid-template-columns:1fr 1fr 1fr 1.4fr 1.4fr;
+  grid-template-rows:repeat(2, clamp(42px, 15vw, 64px));
+  gap:clamp(6px, 2vw, 12px);
   padding:0 4px;
 }
 .key{
@@ -161,8 +167,8 @@ select.fault-select, .side-card select{
   transform:translateY(3px);
   box-shadow:0 0 0 #101113, inset 0 2px 6px rgba(0,0,0,.5);
 }
-.key .arrow{font-size:20px; line-height:1;}
-.key .lbl{font-size:9.5px; letter-spacing:.06em; margin-top:3px; text-transform:uppercase; opacity:.85;}
+.key .arrow{font-size:clamp(14px, 5vw, 20px); line-height:1;}
+.key .lbl{font-size:clamp(7.5px, 2.3vw, 9.5px); letter-spacing:.06em; margin-top:3px; text-transform:uppercase; opacity:.85; text-align:center;}
 .key.wide{grid-column:span 1;}
 .key-start{background:linear-gradient(160deg,#4fcf7f,#1f9c4c); color:#06170c;}
 .key-stop{background:linear-gradient(160deg,#ff7a68,#c92f1c); color:#210602;}
@@ -180,11 +186,11 @@ select.fault-select, .side-card select{
 .key-port .lbl{margin-top:6px;}
 
 .heat-indicator{
-  position:absolute; right:26px; top:14px;
+  position:absolute; right:clamp(14px, 4.5vw, 26px); top:clamp(8px, 2.5vw, 14px);
   display:flex; align-items:center; gap:6px;
-  font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.1em; color:var(--ink-faint);
+  font-family:'IBM Plex Mono',monospace; font-size:clamp(7.5px, 2vw, 9px); letter-spacing:.08em; color:var(--ink-faint);
 }
-.heat-indicator .led{width:9px;height:9px;}
+.heat-indicator .led{width:9px;height:9px; flex:none;}
 
 /* ---- журнал оператора ---- */
 .journal-section{padding:0 0 78px;}
@@ -286,3 +292,24 @@ select.fault-select, .side-card select{
   z-index:100; max-width:80vw; text-align:center;
 }
 .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+/* ---- мобильная оптимизация ---- */
+@media (max-width:600px){
+  /* инпуты минимум 16px — иначе Safari на iPhone зумит страницу при фокусе */
+  .journal-table input[type=text],
+  select.fault-select,
+  .side-card select{
+    font-size:16px;
+  }
+  .journal-grid{gap:14px;}
+  .journal-actions-group{padding-top:12px; margin-top:12px;}
+  .side-card{padding:15px 15px 17px;}
+  .crumb-row{flex-wrap:wrap; gap:8px;}
+  .crumb{font-size:10.5px;}
+  .status-strip{font-size:9px; flex-wrap:wrap; gap:4px;}
+  .journal-history-wrap{border-radius:3px;}
+}
+@media (max-width:420px){
+  .keypad{grid-template-columns:1fr 1fr 1fr 1.3fr 1.3fr; gap:6px;}
+  .led-strip{grid-template-columns:repeat(3,1fr); gap:5px;}
+}
