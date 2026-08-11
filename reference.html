@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Справочник функций — Электон-05</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  .ref-search{
+    display:flex; gap:10px; margin-bottom:28px; flex-wrap:wrap;
+  }
+  .ref-search input{
+    flex:1; min-width:220px;
+    background:var(--steel-800); border:1px solid var(--steel-line); color:var(--ink);
+    padding:12px 14px; border-radius:3px; font-size:14px; font-family:'Inter',sans-serif;
+  }
+  .ref-search select{
+    background:var(--steel-800); border:1px solid var(--steel-line); color:var(--ink);
+    padding:12px 14px; border-radius:3px; font-size:14px; font-family:'Inter',sans-serif;
+  }
+  table.ref{width:100%; border-collapse:collapse; font-size:13.5px;}
+  table.ref th{
+    text-align:left; font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:.06em;
+    font-size:11.5px; color:var(--ink-faint); padding:10px 14px; border-bottom:1px solid var(--steel-line);
+  }
+  table.ref td{padding:11px 14px; border-bottom:1px solid var(--steel-line); vertical-align:top;}
+  table.ref tr:hover td{background:rgba(91,144,179,.06);}
+  .code{font-family:'IBM Plex Mono',monospace; color:var(--amber);}
+  .sec-tag{
+    display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:10.5px;
+    color:var(--accent-bright); border:1px solid var(--steel-line); border-radius:2px;
+    padding:2px 6px; margin-right:8px;
+  }
+  .default{color:var(--ink-dim);}
+  .msg-grid{border:1px solid var(--steel-line); border-radius:4px; overflow:hidden; margin-top:10px;}
+  .msg-row{display:grid; grid-template-columns:180px 1fr; gap:14px; padding:13px 18px; border-bottom:1px solid var(--steel-line); background:var(--steel-800);}
+  .msg-row:nth-child(even){background:#1e2125;}
+  .msg-row:last-child{border-bottom:none;}
+  .msg-name{font-family:'IBM Plex Mono',monospace; color:var(--led-red); font-weight:600;}
+  .empty{padding:30px 10px; color:var(--ink-faint); font-family:'IBM Plex Mono',monospace; font-size:13px;}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container row">
+    <a class="brand" href="index.html">
+      <span class="brand-mark"></span>
+      <span>
+        <span class="brand-name">Электон-05 · Тренажёр</span><br>
+        <span class="brand-tag">по РЭ ЦТКД 065РЭ</span>
+      </span>
+    </a>
+    <div class="navlinks">
+      <a href="index.html">Главная</a>
+      <a href="simulator.html">Симулятор</a>
+      <a href="reference.html" class="active">Справочник</a>
+    </div>
+  </div>
+</nav>
+
+<section class="section" style="padding-top:52px;">
+  <div class="container">
+    <div class="section-head">
+      <p class="section-eyebrow">Справочник</p>
+      <h2>Все функции меню</h2>
+      <p class="desc">Ищите по номеру функции или названию. Значения по умолчанию соответствуют примерам
+      из руководства по эксплуатации.</p>
+    </div>
+
+    <div class="ref-search">
+      <input type="text" id="q" placeholder="Например: 048, перегруз, частота, АПВ…">
+      <select id="secFilter"><option value="">Все разделы</option></select>
+    </div>
+
+    <div id="results"></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <p class="section-eyebrow">Раздел 7 РЭ</p>
+      <h2>Сообщения об остановах</h2>
+      <p class="desc">Что означает надпись во второй строке функции 001, когда двигатель остановлен защитой.</p>
+    </div>
+    <div class="msg-grid" id="messages"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    Неофициальный учебный тренажёр по материалам РЭ «ЭЛЕКТОН-05» (ЦТКД 065РЭ).
+  </div>
+</footer>
+
+<script src="data.js"></script>
+<script src="reference.js"></script>
+</body>
+</html>

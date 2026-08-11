@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Симулятор панели — Электон-05</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="sim.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container row">
+    <a class="brand" href="index.html">
+      <span class="brand-mark"></span>
+      <span>
+        <span class="brand-name">Электон-05 · Тренажёр</span><br>
+        <span class="brand-tag">по РЭ ЦТКД 065РЭ</span>
+      </span>
+    </a>
+    <div class="navlinks">
+      <a href="index.html">Главная</a>
+      <a href="simulator.html" class="active">Симулятор</a>
+      <a href="reference.html">Справочник</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="trainer-wrap">
+
+    <!-- LEFT: tasks -->
+    <div>
+      <div class="side-card">
+        <h4>Как пользоваться</h4>
+        <p><b>◄</b> — из «Текущих параметров» открывает главное меню; внутри раздела — назад.</p>
+        <p><b>►</b> — входит в выбранный раздел меню.</p>
+        <p><b>▲ ▼</b> — перемещение по списку / изменение разряда при редактировании.</p>
+        <p><b>ВВОД</b> — войти в редактирование или подтвердить значение. <b>ОТМЕНА</b> — отменить правку.</p>
+        <p>Работает и клавиатура: стрелки, Enter, Esc.</p>
+      </div>
+
+      <div class="side-card">
+        <h4>Задания</h4>
+        <div class="task" id="task-t1">
+          <div class="task-title"><span class="task-dot" id="dot-t1"></span>1. Открыть главное меню</div>
+          <div class="task-desc">Нажмите <b>◄</b> на экране «Текущие параметры».</div>
+        </div>
+        <div class="task" id="task-t2">
+          <div class="task-title"><span class="task-dot"></span>2. Раздел «Уставки и защиты»</div>
+          <div class="task-desc">В главном меню найдите раздел 3 и нажмите <b>►</b>.</div>
+        </div>
+        <div class="task" id="task-t3">
+          <div class="task-title"><span class="task-dot"></span>3. Настроить АПВ по перегрузке</div>
+          <div class="task-desc">Функция <span class="help-code">048</span> «Перегруз двиг.» — установите значение «АПВ».</div>
+        </div>
+        <div class="task" id="task-t4">
+          <div class="task-title"><span class="task-dot"></span>4. Изменить выходную частоту</div>
+          <div class="task-desc">В «Текущих параметрах» отредактируйте функцию <span class="help-code">003</span>.</div>
+        </div>
+        <div class="task" id="task-t5">
+          <div class="task-title"><span class="task-dot"></span>5. Пуск и останов</div>
+          <div class="task-desc">Нажмите <b>ПУСК</b>, затем <b>СТОП</b>.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER: panel -->
+    <div>
+      <div class="crumb" id="crumb"></div>
+
+      <div class="unit">
+        <div class="heat-indicator"><div class="led" id="heat-led"></div>ПОДОГРЕВ</div>
+        <div class="unit-inner">
+          <div class="led-strip">
+            <div class="led-cell"><div class="led" id="led-stop"></div><div class="cap">СТОП</div><div class="sub">STOP</div></div>
+            <div class="led-cell"><div class="led" id="led-wait"></div><div class="cap">Ожидание</div><div class="sub">WAIT</div></div>
+            <div class="led-cell"><div class="led" id="led-run"></div><div class="cap">Работа</div><div class="sub">RUN</div></div>
+          </div>
+
+          <div class="lcd-frame">
+            <div class="lcd-screen" id="lcd-screen"></div>
+          </div>
+          <div class="status-strip"><span id="status-strip"></span><span>RS-232</span></div>
+
+          <div class="keypad" style="margin-top:22px;">
+            <div class="key" id="k-up"><span class="arrow">▲</span></div>
+            <div class="key" id="k-left"><span class="arrow">◄</span></div>
+            <div class="key" id="k-right"><span class="arrow">►</span></div>
+            <div class="key key-heat" id="k-heat"><span class="arrow">☀</span><span class="lbl">Подогрев</span></div>
+            <div class="key key-start" id="k-start"><span class="arrow">▶</span><span class="lbl">Пуск</span></div>
+
+            <div class="key" id="k-down"><span class="arrow">▼</span></div>
+            <div class="key key-enter" id="k-enter"><span class="lbl" style="font-size:11px;">ВВОД</span></div>
+            <div class="key key-port"><div class="dots"><i></i><i></i><i></i><i></i><i></i></div><div class="lbl">RS-232</div></div>
+            <div class="key key-stop" id="k-stop"><span class="arrow">■</span><span class="lbl">Стоп</span></div>
+            <div class="key key-esc" id="k-esc"><span class="lbl" style="font-size:11px;">ОТМЕНА</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: faults + log -->
+    <div>
+      <div class="side-card">
+        <h4>Смоделировать останов</h4>
+        <select id="fault-select" class="fault-select"></select>
+        <p id="fault-desc" style="min-height:36px;"></p>
+        <button class="btn btn-danger btn-block" id="btn-fault">Вызвать аварийный останов</button>
+        <button class="btn btn-ghost btn-block" id="btn-clear-fault" style="margin-top:8px;">Сбросить аварию</button>
+      </div>
+
+      <div class="side-card">
+        <h4>Журнал событий</h4>
+        <div class="log" id="log"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+  <div class="container">
+    Неофициальный учебный тренажёр по материалам РЭ «ЭЛЕКТОН-05» (ЦТКД 065РЭ). Значения по умолчанию иллюстративны.
+  </div>
+</footer>
+
+<script src="data.js"></script>
+<script src="simulator.js"></script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Тренажёр ЭЛЕКТОН-05 — панель управления «Электон-09.1»</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  #menu-structure{margin-top:6px;}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container row">
+    <a class="brand" href="index.html">
+      <span class="brand-mark"></span>
+      <span>
+        <span class="brand-name">Электон-05 · Тренажёр</span><br>
+        <span class="brand-tag">по РЭ ЦТКД 065РЭ</span>
+      </span>
+    </a>
+    <div class="navlinks">
+      <a href="index.html" class="active">Главная</a>
+      <a href="simulator.html">Симулятор</a>
+      <a href="reference.html">Справочник</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container hero-grid">
+    <div>
+      <p class="eyebrow">Учебный стенд · станция управления ПЭД</p>
+      <h1>Научитесь читать панель <em>«Электон-09.1»</em>, не подходя к шкафу СУ</h1>
+      <p class="lead">Полная имитация ЖКИ 4×20, светодиодов «СТОП/ОЖИДАНИЕ/РАБОТА» и клавиатуры станции
+      управления «Электон-05». Все 12 разделов меню и реальные номера функций — из руководства по
+      эксплуатации ЦТКД 065РЭ.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="simulator.html">Открыть симулятор →</a>
+        <a class="btn btn-ghost" href="reference.html">Справочник по функциям</a>
+      </div>
+      <div class="hero-meta">
+        <span><b>257</b> функций меню</span>
+        <span><b>12</b> разделов</span>
+        <span><b>22</b> сообщения об остановах</span>
+      </div>
+    </div>
+
+    <div class="panel-shell">
+      <div class="panel-topline"><span>Электон · Elekton</span><span>ПЧ-ТТПТ-380-50-1 УХЛ1</span></div>
+      <div class="led-row">
+        <div class="led-unit"><div class="led on-red"></div><div class="led-label">СТОП<small>STOP</small></div></div>
+        <div class="led-unit"><div class="led"></div><div class="led-label">ОЖИДАНИЕ<small>WAIT</small></div></div>
+        <div class="led-unit"><div class="led on-green"></div><div class="led-label">РАБОТА<small>RUN</small></div></div>
+      </div>
+      <div class="lcd" id="hero-lcd"></div>
+    </div>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <p class="section-eyebrow">Зачем это нужно</p>
+      <h2>Ошибка на панели в поле стоит времени простоя скважины</h2>
+      <p class="desc">Оператору СУ нужно уверенно находить нужную функцию, отличать «БЛОК» от «АПВ»,
+      понимать, что значит мигающий зелёный светодиод, и знать, какой параметр смотреть при сообщении
+      «Превыш.Id». Тренажёр даёт это всё без риска для реального оборудования.</p>
+    </div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="num">01</div>
+        <h3>Навигация по меню</h3>
+        <p>12 разделов, как в реальном контроллере: от «Текущих параметров» до «Архива событий».
+        Клавиши ▲▼◄► работают так же, как на панели.</p>
+      </div>
+      <div class="card">
+        <div class="num">02</div>
+        <h3>Редактирование уставок</h3>
+        <p>Разряд за разрядом — как на настоящем ЖКИ: ВВОД входит в редактирование, ◄► выбирает разряд,
+        ▲▼ меняет значение, ОТМЕНА отменяет правку.</p>
+      </div>
+      <div class="card">
+        <div class="num">03</div>
+        <h3>Разбор аварий</h3>
+        <p>Смоделируйте любое из 22 сообщений об остановах (раздел 7 РЭ) и увидите, как это выглядит
+        на индикаторе и что означает.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <p class="section-eyebrow">Структура меню контроллера</p>
+      <h2>12 разделов главного меню</h2>
+      <p class="desc">Ровно та последовательность, что и на реальной панели — от текущих параметров
+      до архива событий (п. 3.3.1 РЭ).</p>
+    </div>
+    <div class="menu-list" id="menu-structure"></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <p class="section-eyebrow">Начать</p>
+      <h2>Готовы попробовать?</h2>
+      <p class="desc">Симулятор запускается сразу с экрана «Текущие параметры» — как настоящий контроллер
+      после подачи питания.</p>
+    </div>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="simulator.html">Перейти к тренажёру →</a>
+      <a class="btn btn-ghost" href="reference.html">Смотреть справочник функций</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    Неофициальный учебный тренажёр по материалам РЭ «ЭЛЕКТОН-05» (ЦТКД 065РЭ, ЗАО «Электон», г. Радужный, 2004).
+    Не является продукцией ЗАО «Электон» и не заменяет действующую эксплуатационную документацию.
+  </div>
+</footer>
+
+<script src="data.js"></script>
+<script src="main.js"></script>
+<script>
+  const box = document.getElementById('menu-structure');
+  box.innerHTML = SECTIONS.map(s => `
+    <div class="menu-row">
+      <div class="menu-idx">${String(s.id).padStart(2,'0')}</div>
+      <div class="menu-name">${s.title}</div>
+      <div class="menu-range">${s.range}</div>
+      <div class="menu-desc">${s.desc}</div>
+    </div>
+  `).join('');
+</script>
+</body>
+</html>
