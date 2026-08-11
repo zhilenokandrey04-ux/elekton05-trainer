@@ -11,7 +11,7 @@
     { key: 'freq', label: 'Частота', code: '003', unit: 'Гц', decimals: 2, min: 35, max: 65 },
     { key: 'current', label: 'Ток двигателя', code: ['004', '005', '006'], agg: 'max', unit: 'А', decimals: 1, min: 40, max: 140 },
     { key: 'load', label: 'Загрузка', code: '018', unit: '%', decimals: 0, min: 30, max: 100 },
-    { key: 'zsp', label: 'Зсп (глубина спуска)', code: '227', unit: 'м', decimals: 0, min: 800, max: 2600 },
+    { key: 'zsp', label: 'ЗСП (уставка недогруза)', code: '056', unit: '%', decimals: 0, min: 40, max: 90 },
     { key: 'iso', label: 'Сопр. изоляции', code: '024', unit: 'кОм', decimals: 0, min: 200, max: 9999 },
     { key: 'temp', label: 'Температура', code: '030', unit: '°C', decimals: 0, min: 15, max: 95 },
     { key: 'press', label: 'Давление', code: '028', unit: 'атм.', decimals: 0, min: 10, max: 180 },
