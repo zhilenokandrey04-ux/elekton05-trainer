@@ -26,6 +26,47 @@
     stoppedManually: false,
   };
 
+  // ---------- звук клавиш ----------
+  let soundEnabled = true;
+  if (window.ElektonStore) {
+    const saved = window.ElektonStore.load().soundEnabled;
+    if (saved === false) soundEnabled = false;
+  }
+  let audioCtx = null;
+  function beep(freq, duration, volume) {
+    if (!soundEnabled) return;
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'square';
+      osc.frequency.value = freq || 1800;
+      gain.gain.value = volume != null ? volume : 0.045;
+      osc.connect(gain).connect(audioCtx.destination);
+      const now = audioCtx.currentTime;
+      const d = duration || 0.045;
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + d);
+      osc.start(now);
+      osc.stop(now + d);
+    } catch (e) { /* аудио недоступно — молча игнорируем */ }
+  }
+  function keyBeep(id) {
+    if (id === 'k-start') { beep(1300, 0.05); setTimeout(() => beep(1900, 0.07), 60); }
+    else if (id === 'k-stop') { beep(650, 0.11); }
+    else { beep(1800, 0.04); }
+  }
+  function updateSoundIcon() {
+    const btn = document.getElementById('sound-toggle');
+    if (btn) { btn.textContent = soundEnabled ? '🔊' : '🔇'; btn.title = soundEnabled ? 'Звук клавиш: включён' : 'Звук клавиш: выключен'; }
+  }
+  function toggleSound() {
+    soundEnabled = !soundEnabled;
+    updateSoundIcon();
+    if (window.ElektonStore) window.ElektonStore.patch({ soundEnabled });
+    if (soundEnabled) beep(1800, 0.04);
+  }
+
   // ---------- helpers ----------
   function top() { return state.stack[state.stack.length - 1]; }
 
@@ -327,13 +368,23 @@
   }
 
   function updateTasks() {
+    const persisted = (window.ElektonStore ? window.ElektonStore.load().tasksDone : null) || {};
     const map = {
-      t1: state.visitedMain,
-      t2: state.visitedSections.has(3),
-      t3: (() => { const f = SECTIONS[2].functions.find((x) => x.code === '048'); return f && f.value === 'АПВ'; })(),
-      t4: (() => { const f = SECTIONS[0].functions.find((x) => x.code === '003'); return f && f.value !== 50; })(),
-      t5: state.startedOnce && state.stoppedManually,
+      t1: state.visitedMain || !!persisted.t1,
+      t2: state.visitedSections.has(3) || !!persisted.t2,
+      t3: (() => { const f = SECTIONS[2].functions.find((x) => x.code === '048'); return (f && f.value === 'АПВ') || !!persisted.t3; })(),
+      t4: (() => { const f = SECTIONS[0].functions.find((x) => x.code === '003'); return (f && f.value !== 50) || !!persisted.t4; })(),
+      t5: (state.startedOnce && state.stoppedManually) || !!persisted.t5,
     };
+    // впервые выполненные задания сохраняем — они останутся отмеченными при следующем визите
+    if (window.ElektonStore) {
+      const newlyDone = {};
+      let changed = false;
+      Object.keys(map).forEach((id) => {
+        if (map[id] && !persisted[id]) { newlyDone[id] = true; changed = true; }
+      });
+      if (changed) window.ElektonStore.patch({ tasksDone: Object.assign({}, persisted, newlyDone) });
+    }
     Object.keys(map).forEach((id) => {
       const el = document.getElementById('task-' + id);
       if (el) el.classList.toggle('done', !!map[id]);
@@ -345,6 +396,7 @@
     if (!el) return;
     el.classList.add('pressed');
     setTimeout(() => el.classList.remove('pressed'), 110);
+    keyBeep(el.id);
   }
 
   function bindKey(id, fn) {
@@ -392,6 +444,11 @@
   faultSelect.selectedIndex = 0;
   document.getElementById('fault-desc').textContent = faultSelect.selectedOptions[0].dataset.desc;
 
+  // ---------- звук: переключатель ----------
+  const soundBtn = document.getElementById('sound-toggle');
+  if (soundBtn) soundBtn.addEventListener('click', toggleSound);
+  updateSoundIcon();
+
   // ---------- clock ----------
   setInterval(() => {
     if (state.running) { state.elapsed += 1; render(); }
@@ -401,6 +458,7 @@
   log('Питание подано. Загрузка «ЭЛЕКТОН-09»…');
   setTimeout(() => { log('Готово. Экран «Текущие параметры».'); render(); updateTasks(); }, 400);
   render();
+  updateTasks(); // сразу показать ранее выполненные задания (сохранённый прогресс)
 
   // ---------- внешний доступ для журнала оператора (journal.js) ----------
   window.__electonRender = render;

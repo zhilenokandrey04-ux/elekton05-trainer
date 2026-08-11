@@ -67,7 +67,10 @@
 
     <!-- CENTER: panel -->
     <div>
-      <div class="crumb" id="crumb"></div>
+      <div class="crumb-row">
+        <div class="crumb" id="crumb"></div>
+        <button class="sound-toggle" id="sound-toggle" title="Звук клавиш">🔊</button>
+      </div>
 
       <div class="unit">
         <div class="heat-indicator"><div class="led" id="heat-led"></div>ПОДОГРЕВ</div>
@@ -159,6 +162,7 @@
     </div>
 
     <div class="journal-score" id="journal-score"></div>
+    <div class="journal-best" id="journal-best"></div>
 
     <div class="journal-history-wrap">
       <table class="journal-table">
@@ -184,6 +188,7 @@
 </footer>
 
 <script src="data.js"></script>
+<script src="storage.js"></script>
 <script src="simulator.js"></script>
 <script src="journal.js"></script>
 </body>

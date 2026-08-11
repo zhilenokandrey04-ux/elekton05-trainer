@@ -68,6 +68,29 @@
     box.className = 'journal-score ' + (cls || '');
   }
 
+  // ---- лучший результат (сохраняется между визитами) ----
+  function loadBest() {
+    if (!window.ElektonStore) return null;
+    return window.ElektonStore.load().bestScore || null;
+  }
+  function maybeSaveBest(correct, total) {
+    if (!window.ElektonStore) return;
+    const store = window.ElektonStore.load();
+    const prev = store.bestScore;
+    if (!prev || correct > prev.correct) {
+      window.ElektonStore.patch({ bestScore: { correct, total, date: new Date().toLocaleDateString('ru-RU') } });
+    }
+    renderBest();
+  }
+  function renderBest() {
+    const el = document.getElementById('journal-best');
+    if (!el) return;
+    const best = loadBest();
+    el.textContent = best
+      ? `Лучший результат: ${best.correct} из ${best.total} (сохранено ${best.date})`
+      : 'Лучший результат: пока нет попыток';
+  }
+
   // ---- «Обновить показания» — генерирует новый вариант на станции ----
   function randomizeStation() {
     FIELDS.forEach((f) => {
@@ -118,6 +141,7 @@
     } else {
       scorebox(`Верно: ${correct} из ${FIELDS.length} (${pct}%) — красным отмечены ошибки, исправьте и проверьте снова.`, 'bad');
     }
+    maybeSaveBest(correct, FIELDS.length);
     if (typeof window.__electonLog === 'function') window.__electonLog(`Проверка журнала: ${correct} из ${FIELDS.length} верно`);
   }
 
@@ -194,6 +218,7 @@
   document.getElementById('btn-journal-clear').addEventListener('click', clearJournal);
 
   renderHistory();
+  renderBest(); // показать сохранённый лучший результат сразу при загрузке
   // при загрузке страницы сразу готовим первый вариант для проверки
   setTimeout(randomizeStation, 500);
 })();
