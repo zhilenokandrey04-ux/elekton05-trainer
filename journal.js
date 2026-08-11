@@ -138,6 +138,7 @@
     const pct = Math.round((correct / FIELDS.length) * 100);
     if (correct === FIELDS.length) {
       scorebox(`Верно: ${correct} из ${FIELDS.length} (${pct}%) — все показания сняты правильно!`, 'ok');
+      if (typeof window.__electonShowTechTask === 'function') window.__electonShowTechTask();
     } else {
       scorebox(`Верно: ${correct} из ${FIELDS.length} (${pct}%) — красным отмечены ошибки, исправьте и проверьте снова.`, 'bad');
     }
