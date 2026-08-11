@@ -119,6 +119,46 @@
   </div>
 </div>
 
+<section class="section journal-section">
+  <div class="container">
+    <div class="section-head">
+      <p class="section-eyebrow">Обход скважины</p>
+      <h2>Журнал оператора</h2>
+      <p class="desc">Считайте показания прямо с работающей панели тренажёра — как во время обхода —
+      и занесите их в журнал. Значения берутся из тех же функций, что вы видите на ЖКИ.</p>
+    </div>
+
+    <div class="journal-grid">
+      <table class="journal-table">
+        <thead><tr><th>Параметр</th><th>Значение</th><th>Ед. изм.</th></tr></thead>
+        <tbody id="journal-fields-body"></tbody>
+      </table>
+
+      <div class="journal-actions">
+        <button class="btn btn-primary btn-block" id="btn-journal-read">Считать со станции</button>
+        <button class="btn btn-ghost btn-block" id="btn-journal-add">Записать в журнал</button>
+        <button class="btn btn-ghost btn-block" id="btn-journal-csv">Скачать журнал (CSV)</button>
+        <button class="btn btn-danger btn-block" id="btn-journal-clear">Очистить журнал</button>
+        <p class="journal-hint">Поля можно править вручную — как заполнение бумажного журнала —
+        или подставить автоматически кнопкой «Считать со станции».</p>
+      </div>
+    </div>
+
+    <div class="journal-history-wrap">
+      <table class="journal-table">
+        <thead>
+          <tr>
+            <th>Время</th>
+            <th>Частота</th><th>Ток</th><th>Загрузка</th><th>Зсп</th><th>Изоляция</th>
+            <th>Темп.</th><th>Давление</th><th>Cos φ</th><th>Р акт.</th><th>U вых.</th>
+          </tr>
+        </thead>
+        <tbody id="journal-history-body"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
 <div class="toast" id="toast"></div>
 
 <footer>
@@ -129,5 +169,6 @@
 
 <script src="data.js"></script>
 <script src="simulator.js"></script>
+<script src="journal.js"></script>
 </body>
 </html>
